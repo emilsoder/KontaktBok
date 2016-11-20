@@ -1,6 +1,23 @@
 USE [ContactBookDB]
 GO
 
+CREATE TABLE ContactDetails
+(
+	ContactID INT NOT NULL,
+	FirstName NVARCHAR(30),
+	
+	LastName NVARCHAR(30),
+	PhonePrivate NVARCHAR(30),
+	HomePhone NVARCHAR(30),
+	WorkPhone NVARCHAR(30),
+
+	HomeAddress NVARCHAR(30),
+	WorkAddress NVARCHAR (30),
+	OtherAddress NVARCHAR(30),
+
+	PRIMARY KEY (ContactID)
+)
+
 CREATE PROCEDURE [dbo].[SearchContactsSP]
 (
 	@UserInput varchar(30)
