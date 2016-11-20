@@ -1,12 +1,175 @@
-﻿<Window x:Class="KontaktBok.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KontaktBok"
+        xmlns:ViewControls_Layer="clr-namespace:KontaktBok.ViewControls_Layer" x:Class="KontaktBok.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="437.833" Width="470">
+
+    <Window.Resources>
+        <Storyboard x:Key="sbShowAddView" >
+            <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,-732,0,0" To="0,-9,0,0" DecelerationRatio=".9" Duration="0:0:1" />
+        </Storyboard>
+        <Storyboard x:Key="sbHideAddView">
+            <ThicknessAnimation Storyboard.TargetProperty="Margin" From="0,-9,0,0" To="0,-732,0,0" AccelerationRatio=".9" Duration="0:0:1" />
+        </Storyboard>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0"/>
+        </Grid.ColumnDefinitions>
+
+        <ListBox x:Name="lbContacts" HorizontalContentAlignment="Stretch" Margin="0,75,0,0" HorizontalAlignment="Left" Width="159">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" MouseLeftButtonUp="GotoDetails">
+                        <TextBlock Width="140">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="FirstName"/>
+                                    <Binding Path="LastName"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <ScrollViewer Name="scrollViewer" ScrollViewer.VerticalScrollBarVisibility="Visible" Margin="159,0,0,0" Background="#FF007ACC" HorizontalAlignment="Stretch">
+            <Grid x:Name="mainGrid" Background="#FF007ACC"  ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Visible" Width="287" HorizontalAlignment="Stretch">
+
+                <TextBox x:Name="txtFullName" Margin="10,5,95,0" FontSize="20" Background="Transparent" BorderBrush="#FF007ACC" Height="30" VerticalAlignment="Top" Focusable="False" >
+                    <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="FirstName"/>
+                        <Binding Path="LastName"/>
+                    </MultiBinding>
+                </TextBox>
+
+                <Button x:Name="btnEdit" Content="" VerticalAlignment="Top" Click="btnEdit_Click" BorderBrush="{x:Null}" Height="30" ToolTip="Edit contact" Style="{StaticResource MyButton}" Margin="0,7,15,0" HorizontalAlignment="Right" Width="30">
+                    <Button.Background>
+                        <ImageBrush ImageSource="Kontaktbok Ikoner/Contact Edit-WF.png" Stretch="Uniform"/>
+                    </Button.Background>
+                </Button>
+
+                <Button x:Name="btnCancelEdit" Visibility="Hidden" Click="btnCancelEdit_Click" ToolTip="Avbryt och återgå" RenderTransformOrigin="0.514,0.485" HorizontalAlignment="Right" Width="32" Height="30" VerticalAlignment="Top" Margin="0,7,40,0" Style ="{StaticResource MyButton}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="Kontaktbok Ikoner/Black_S48_P11_Blue/48_Thin_Close_B.png" Stretch="Uniform">
+                        </ImageBrush>
+                    </Button.Background>
+                </Button>
+
+                <Button x:Name="btnConfirmEdit" Click="btnConfirmEdit_Click" Visibility="Hidden" ToolTip="Godkänn ändringar" RenderTransformOrigin="0.514,0.485" HorizontalAlignment="Right" Width="32" Height="32" VerticalAlignment="Top" Margin="0,7,15,0" BorderBrush="{x:Null}" Style ="{StaticResource MyButton}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="Kontaktbok Ikoner/Black_S48_P11_Blue/48_Thin_Accept_Blue.png" Stretch="Uniform">
+                            <ImageBrush.RelativeTransform>
+                                <TransformGroup>
+                                    <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.3" ScaleY="1.3"/>
+                                    <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                    <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </ImageBrush.RelativeTransform>
+                        </ImageBrush>
+                    </Button.Background>
+                </Button>
+
+                <Label x:Name="lblMobilePhone" Content="Mobiltelefon, privat" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,48,0,0" FontSize="14" Height="29" Width="131" Foreground="White"/>
+                <TextBox x:Name="txtMobilePhone" Text="{Binding MobilePhone}" VerticalAlignment="Top" Margin="10,77,0,0" Height="25" BorderThickness="1" Background="Transparent" BorderBrush="#FF007ACC" IsManipulationEnabled="False" HorizontalAlignment="Left" Width="162" Focusable="False" />
+
+                <Label x:Name="lblWorkPhone" Content="Telefon, arbete" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,107,0,0" Width="114" FontSize="14" Height="29" Foreground="White"/>
+                <TextBox x:Name="txtWorkPhone" Text="{Binding WorkPhone}" VerticalAlignment="Top" Margin="10,136,0,0" Height="24" BorderThickness="1" Background="Transparent" BorderBrush="#FF007ACC" HorizontalAlignment="Left" Width="162" Focusable="False"/>
+
+                <Label x:Name="lblHomePhone" Content="Telefon, hem" VerticalAlignment="Top" Margin="10,165,0,0" HorizontalAlignment="Left" Width="114" FontSize="14" Height="29" Foreground="White"/>
+                <TextBox x:Name="txtHomePhone" Text="{Binding HomePhone}" VerticalAlignment="Top" Margin="10,194,0,0" Height="24" BorderThickness="1" Background="Transparent" BorderBrush="#FF007ACC" HorizontalAlignment="Left" Width="162" Focusable="False"/>
+
+                <Label x:Name="lblHomeAddress" Content="Address, hem" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,224,0,0" Width="114" FontSize="14" Height="29" Foreground="White"/>
+                <TextBox x:Name="txtHomeAddress" Text="{Binding HomeAddress}" VerticalAlignment="Top" Margin="10,253,0,0" Height="70" BorderThickness="1" Background="Transparent" BorderBrush="#FF007ACC" IsManipulationEnabled="False" HorizontalAlignment="Left" Width="162" Focusable="False" />
+
+                <Label x:Name="lblWorkAddress" Content="Address, arbete" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,328,0,0" Width="114" FontSize="14" Height="29" Foreground="White"/>
+                <TextBox x:Name="txtWorkAddress" Text="{Binding WorkAddress}" VerticalAlignment="Top" Margin="10,357,0,0" Height="70" BorderThickness="1" Background="Transparent" BorderBrush="#FF007ACC" HorizontalAlignment="Left" Width="162" Focusable="False"/>
+
+                <Label x:Name="lblOtherAddress" Content="Address, annat" VerticalAlignment="Top" Margin="10,432,0,0" HorizontalAlignment="Left" Width="114" FontSize="14" Height="29" Foreground="White"/>
+                <TextBox x:Name="txtOtherAddress" Text="{Binding OtherAddress}" Margin="10,461,0,0" BorderThickness="1" Background="Transparent" BorderBrush="#FF007ACC" HorizontalAlignment="Left" Width="164" Focusable="False" Height="56" VerticalAlignment="Top"/>
+
+                <StackPanel Name="uccGrid" Orientation="Vertical" HorizontalAlignment="Stretch" Margin="-1,-732,0,575" ScrollViewer.CanContentScroll="True">
+                    <Grid Background="#72777D" Height="706" HorizontalAlignment="Stretch" ScrollViewer.CanContentScroll="True">
+
+                        <Button x:Name="btnCancelAdd" Click="btnCancelAdd_Click" Content="" Visibility="Visible" ToolTip="Avbryt och återgå" RenderTransformOrigin="0.514,0.485" HorizontalAlignment="Right" Width="32" Height="32" VerticalAlignment="Top" Margin="0,18,43,0" Style ="{StaticResource MyButton}">
+                            <Button.Background>
+                                <ImageBrush ImageSource="Kontaktbok Ikoner/Black_S48_P11_Gray/Thin_Close.png" Stretch="Uniform"/>
+                            </Button.Background>
+                        </Button>
+                        <Button x:Name="btnConfirmAdd" Click="btnConfirmAdd_Click" Content="" Visibility="Visible" ToolTip="Lägg till kontakt" RenderTransformOrigin="0.514,0.485" HorizontalAlignment="Right" Width="32" Height="32" VerticalAlignment="Top" Margin="0,18,6,0" BorderBrush="{x:Null}" Style ="{StaticResource MyButton}">
+                            <Button.Background>
+                                <ImageBrush ImageSource="Kontaktbok Ikoner/Black_S48_P11_Gray/Thin_Accept.png" Stretch="Uniform">
+                                    <ImageBrush.RelativeTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleX="1.3" ScaleY="1.3"/>
+                                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                            <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </ImageBrush.RelativeTransform>
+                                </ImageBrush>
+                            </Button.Background>
+                        </Button>
+
+                        <Label Content="Förnamn" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,62,0,0" FontSize="14" Height="30" Width="124" Foreground="White"/>
+                        <Label Content="Efternamn" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,118,0,0" FontSize="14" Height="30" Width="118" Foreground="White"/>
+
+                        <Label Content="Mobiltelefon, privat" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,195,0,0" FontSize="14" Height="30" Width="131" Foreground="White"/>
+                        <Label Content="Telefon, arbete" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,317,0,0" FontSize="14" Height="30" Width="131" Foreground="White"/>
+                        <Label Content="Telefon, hem" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,256,0,0" FontSize="14" Height="30" Width="131" Foreground="White"/>
+
+                        <TextBox x:Name="txtMobilePhoneAdd" VerticalAlignment="Top" Margin="10,225,0,0" Height="26" BorderThickness="1" HorizontalAlignment="Left" Width="216" />
+                        <TextBox x:Name="txtFirstNameAdd" VerticalAlignment="Top" Margin="10,92,0,0" Height="26" BorderThickness="1" HorizontalAlignment="Left" Width="216" TextChanged="txtFirstNameAdd_TextChanged" />
+                        <TextBox x:Name="txtLastNameAdd" VerticalAlignment="Top" Margin="10,148,0,0" Height="26" BorderThickness="1" HorizontalAlignment="Left" Width="216" TextChanged="txtLastNameAdd_TextChanged"/>
+                        <TextBox x:Name="txtWorkPhoneAdd" VerticalAlignment="Top" Margin="10,347,0,0" Height="26" BorderThickness="1" HorizontalAlignment="Left" Width="216"/>
+                        <TextBox x:Name="txtHomePhoneAdd" VerticalAlignment="Top" Margin="9,286,0,0" Height="26" BorderThickness="1" HorizontalAlignment="Left" Width="217"/>
+
+
+                        <Label Content="Address, hem" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,388,0,0" FontSize="14" Height="30" Width="131" Foreground="White"/>
+                        <Label Content="Address, arbete" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,493,0,0" FontSize="14" Height="30" Width="132" Foreground="White"/>
+                        <Label Content="Address, annat" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="11,596,0,0" FontSize="14" Height="30" Width="131" Foreground="White"/>
+
+                        <TextBox x:Name="txtHomeAddressAdd" VerticalAlignment="Top" Margin="10,418,0,0" Height="68" BorderThickness="1" HorizontalAlignment="Left" Width="216"/>
+                        <TextBox x:Name="txtWorkAddressAdd" VerticalAlignment="Top" Margin="11,523,0,0" Height="68" BorderThickness="1" HorizontalAlignment="Left" Width="216"/>
+                        <TextBox x:Name="txtOtherAddressAdd" VerticalAlignment="Top" Margin="10,626,0,0" Height="68" BorderThickness="1" HorizontalAlignment="Left" Width="216"/>
+                        <Label Content="Ny kontakt" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="28" Height="47" Width="148" Foreground="White" Margin="0,7,0,0"/>
+                        <Label x:Name="ErrorLabel" Visibility="Hidden" Content="Du måste ange förnamn eller efternamn." HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Top" Margin="5,172,-63,0" FontSize="11" Height="26" Width="346" Foreground="#FFA20909" BorderThickness="0"/>
+                    </Grid>
+
+                </StackPanel>
+                <Button x:Name="btnDeleteContact" Content="Ta bort kontakt" Margin="10,0,0,3" BorderBrush="#FFA20202" BorderThickness="1" Click="btnDeleteContact_Click" HorizontalAlignment="Left" Width="162" Height="24" VerticalAlignment="Bottom">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#FF979797"/>
+                            <GradientStop Color="#FF635959" Offset="1"/>
+                            <GradientStop Color="#FFB2B2B2" Offset="0.526"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+
+            </Grid>
+        </ScrollViewer>
+
+        <TextBox x:Name="txtSearch" HorizontalAlignment="Left" Height="19" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" Margin="3,51,0,0" TextChanged="txtSearch_TextChanged" RenderTransformOrigin="0.5,0.5">
+            <TextBox.Background>
+                <ImageBrush ImageSource="Kontaktbok Ikoner/Search-WF.png" Stretch="Uniform" AlignmentX="Right">
+                </ImageBrush>
+            </TextBox.Background>
+        </TextBox>
+        <Label x:Name="label" Content="Kontakter" HorizontalAlignment="Left" VerticalAlignment="Top" Width="98" FontSize="20" Height="34" Margin="0,5,0,0"/>
+        <Button x:Name="button" Content="Show" HorizontalAlignment="Left" VerticalAlignment="Top" Width="30" Margin="124,5,0,0" Height="34" BorderBrush="{x:Null}" ToolTip="Add new contact" Style="{StaticResource MyButton}" Click="button_Click" Foreground="#00000000">
+            <Button.Background>
+                <ImageBrush ImageSource="Icons/Contact Add-WF.png" Stretch="Uniform"/>
+            </Button.Background>
+        </Button>
+
     </Grid>
 </Window>
